@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const dadosSolaresSchema = new mongoose.Schema({
-  air_temp: Number,
-  dni: Number,
-  ghi: Number,
-  period_end: Date,
+  air_temp: Number, // temperatura do ar
+  dni: Number,      // irradiação solar direta normal
+  ghi: Number,      // irradiação solar global horizontal
+  period_end: Date, 
   period: String
 });
 

@@ -1,22 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const DadosSolares = require('../models/teste');
-
-/*
-router.get('/:id', async (req, res) => {
-    try {
-      const registro = await DadosSolares.findById(req.params.id);
-  
-      if (registro) {
-        res.json(registro);
-      } else {
-        res.status(404).json({ message: 'Registro não encontrado' });
-      }
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
-});
-*/
+const DadosSolares = require('../models/solar_irradiance_temperatures');
 
 router.get('/date/:startDate/:endDate', async (req, res) => {
     try {
@@ -40,6 +24,4 @@ router.get('/date/:startDate/:endDate', async (req, res) => {
     }
 });
   
-  
-
 module.exports = router;

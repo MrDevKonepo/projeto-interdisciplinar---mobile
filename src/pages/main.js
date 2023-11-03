@@ -1,57 +1,86 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
-import geracaoStyles from '../styles/style_geracao'; // Importando estilos como geracaoStyles
-
-const data = {
-  //labels: ['12. Jul', '08:00', '16:00', '13. Jul'],
-  datasets: [
-    {
-      data: [0, 50, 100, 200, 250, 200, 100, 0],
-      color: (opacity = 1) => `rgba(0, 128, 0, ${opacity})`, // Verde (Potência gerada pela placa solar)
-      strokeWidth: 2,
-    },
-    {
-      data: [50, 75, 100, 150, 200, 175, 125, 75],
-      color: (opacity = 1) => `rgba(0, 0, 255, ${opacity})`, // Azul (Potência consumida)
-      strokeWidth: 2,
-    },
-  ],
-};
-
-const chartConfig = {
-  backgroundGradientFrom: 'white',
-  backgroundGradientTo: 'white',
-  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Primeiro grafico 
-  strokeWidth: 2,
-};
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView, Text } from 'react-native';
+import { VictoryChart, VictoryLine, VictoryTheme } from 'victory-native';
 
 const Main = () => {
+  const [dados, setDados] = useState([]);
+
+  useEffect(() => {
+    async function fetchDados() {
+      try {
+        const startDate = '2021-01-01';
+        const endDate = '2021-01-30';
+        const response = await fetch(`http://192.168.100.60:3000/api/dadosSolares/date/${startDate}/${endDate}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          setDados(data);
+        } else {
+          console.error('Erro ao buscar os dados');
+        }
+      } catch (error) {
+        console.error('Erro ao buscar os dados: ', error);
+      }
+    }
+
+    fetchDados();
+  }, []);
+
+  const aggregateDataByHour = (data, periodStart, periodEnd) => {
+    const filteredData = data.filter(item => {
+      const hour = new Date(item.period_end).getHours();
+      return hour >= periodStart && hour < periodEnd;
+    });
+
+    const aggregatedData = {};
+    filteredData.forEach(item => {
+      const hour = new Date(item.period_end).getHours();
+      if (!aggregatedData[hour]) {
+        aggregatedData[hour] = {
+          count: 1,
+          temperature: item.air_temp
+        };
+      } else {
+        aggregatedData[hour].count++;
+        aggregatedData[hour].temperature += item.air_temp;
+      }
+    });
+    return aggregatedData;
+  };
+
+  const renderCharts = () => {
+    const periods = [
+      { name: 'Manhã', periodStart: 6, periodEnd: 12 },
+      { name: 'Tarde', periodStart: 12, periodEnd: 18 },
+      { name: 'Noite', periodStart: 18, periodEnd: 24 },
+      { name: 'Madrugada', periodStart: 0, periodEnd: 6 }
+    ];
+
+    return periods.map((period, index) => {
+      const aggregatedData = aggregateDataByHour(dados, period.periodStart, period.periodEnd);
+      const chartData = Object.keys(aggregatedData).map(hour => ({
+        x: `${hour}:00`,
+        y: aggregatedData[hour].temperature
+      }));
+
+      return (
+        <View key={index}>
+          <Text>{period.name}</Text>
+          <VictoryChart width={408} height={270} theme={VictoryTheme.grayscale}>
+            <VictoryLine
+              style={{ data: { stroke: '#c43a31' }, parent: { border: '1px solid #ccc' } }}
+              data={chartData}
+            />
+          </VictoryChart>
+        </View>
+      );
+    });
+  };
+
   return (
-    <View>
-      <Text style={geracaoStyles.title}>Geração de Energia Elétrica</Text>
-      <LineChart
-        data={data}
-        width={392}
-        height={200}
-        yAxisLabel="kW"
-        chartConfig={chartConfig}
-      />
-      <View style={geracaoStyles.legendContainer}>
-        {data.datasets.map((dataset, index) => (
-          <View style={geracaoStyles.legendItem} key={index}>
-            <View style={{ ...geracaoStyles.legendColor, backgroundColor: dataset.color(1) }}></View>
-            <Text style={geracaoStyles.legendText}>
-              {dataset.color(1) === 'rgba(255, 165, 0, 1)'
-                ? 'Potência do Inversor'
-                : dataset.color(1) === 'rgba(0, 128, 0, 1)'
-                ? 'Potência gerada pela placa solar'
-                : 'Potência consumida'}
-            </Text>
-          </View>
-        ))}
-      </View>
-    </View>
+    <ScrollView>
+      {renderCharts()}
+    </ScrollView>
   );
 };
 
