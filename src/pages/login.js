@@ -11,7 +11,7 @@ const Login = () => {
 
     const handleLogin = () => {
         if (email === '' && password === ''){
-            navigation.navigate('main');
+            navigation.navigate('air_temp');
         }else{
             alert('E-mail ou senha inválidos!')
         }
