@@ -4,14 +4,15 @@ const geracaoStyles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
+    //textAlign: 'left',
     marginVertical: 10,
   },
   legendContainer: {
     flexDirection: 'column', // Mude de 'row' para 'column'
     alignItems: 'left',
-    marginTop: 10,
-    marginLeft: 100,
+    marginTop: 5,
+    marginVertical: 15,
+    marginLeft: 73,
   },
   legendItem: {
     flexDirection: 'row',
@@ -24,7 +25,7 @@ const geracaoStyles = StyleSheet.create({
     marginRight: 5,
   },
   legendText: {
-    fontSize: 13, // Ajuste o tamanho da fonte conforme necessário
+    fontSize: 13 // Ajuste o tamanho da fonte conforme necessário
   },
 });
 

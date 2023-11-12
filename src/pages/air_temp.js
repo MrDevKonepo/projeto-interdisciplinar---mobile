@@ -269,8 +269,8 @@ const AirTemp = () => {
           value={endDate}
           placeholder="Data final (YYYY-MM-DD)"
         />
+        <Button title="Buscar Dados" onPress={fetchNewData} />
       </View>
-      <Button title="Buscar Dados" onPress={fetchNewData} />
       {renderCharts()}
       <Text>Temperatura Total: {totalAirTemp}</Text>
       <Text>Moda: {modeAirTemp.join(', ')}</Text>

@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from './pages/login';
 import AirTemp from './pages/air_temp';
 import Main from './pages/main';
+import SolarIrradiance from './pages/solar_irradiance';
 
 const Stack = createStackNavigator();
 
@@ -14,6 +15,19 @@ export default function Routes() {
                 <Stack.Screen name="login" component={Login} options={{
                     title: 'LOGIN',
                     headerTitleAlign: 'center',
+                    headerStyle:{
+                        backgroundColor:'#3498db',
+                    },
+                    headerTitleStyle:{
+                        fontWeight: 'bold',
+                        color: '#fff'
+                    }
+                }}/>                
+                <Stack.Screen name="main" component={Main} options={{
+                    title: 'HOME',
+                    headerTitleAlign: 'center',
+                    headerTintColor: '#fff',
+                    headerLeft: null,
                     headerStyle:{
                         backgroundColor:'#3498db',
                     },
@@ -35,8 +49,8 @@ export default function Routes() {
                         color: '#fff'
                     }
                 }}/>
-                <Stack.Screen name="main" component={Main} options={{
-                    title: 'HOME',
+                <Stack.Screen name="solar_irradiance" component={SolarIrradiance} options={{
+                    title: 'Irradiação Solar',
                     headerTitleAlign: 'center',
                     headerTintColor: '#fff',
                     headerLeft: null,
@@ -48,7 +62,6 @@ export default function Routes() {
                         color: '#fff'
                     }
                 }}/>
-                
             </Stack.Navigator>
         </NavigationContainer>
     )

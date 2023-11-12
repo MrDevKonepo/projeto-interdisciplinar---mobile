@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Main = () => {
@@ -10,14 +9,20 @@ const Main = () => {
         navigation.navigate('air_temp');
     }
 
+    const handleSolarIrradiance = () => {
+        navigation.navigate('solar_irradiance');
+    }
+
     return(
         <View style={styles.container}>
             <TouchableOpacity style={styles.button} onPress={handleAirTemp}>
                 <Text style={styles.buttonText}>Temperatura do Ar</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleSolarIrradiance}>
+                <Text style={styles.buttonText}>Irradiação Solar</Text>
+            </TouchableOpacity>
         </View>
     );
-
 }
 
 const styles = StyleSheet.create({
@@ -41,6 +46,7 @@ const styles = StyleSheet.create({
         padding: 10,
         width: '80%',
         alignItems: 'center',
+        margin: 10
     },
     buttonText:{
         color: '#fff',
