@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, Alert, ScrollView } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import geracaoStyles from '../styles/style_geracao';
+import calculateMode from '../../backend/global_functions/mode';
 
 const SolarIrradiance = () => {
     const [dados, setDados] = useState([]);
@@ -11,9 +12,14 @@ const SolarIrradiance = () => {
     const [chartData, setChartData] = useState({});
     const dniColor = '0, 0, 255';
     const ghiColor = '0, 128, 0';
-    const [totalDni, setTotalDni] = useState(0);
-    const [totalGhi, setTotalGhi] = useState(0);
-
+    const [averageDNI, setAverageDNI] = useState(0); // Para calcular as medias
+    const [averageGHI, setAverageGHI] = useState(0);
+    const [dniValues, setDniValues] = useState([]); // Array para os calculos estatisticos
+    const [ghiValues, setGhiValues] = useState([]);
+    const [dniMode, setDniMode] = useState([]);
+    const [ghiMode, setGhiMode] = useState([]);
+    const [dniMedian, setDniMedian] = useState([]);
+    const [ghiMedian, setGhiMedian] = useState([]);
 
     const handleStartDateChange = (text) => {
         setStartDate(text);
@@ -53,11 +59,50 @@ const SolarIrradiance = () => {
                 aggregatedData[hour].dni += item.dni;
                 aggregatedData[hour].ghi += item.ghi;
             }
-            setTotalDni(prevTotal => prevTotal + item.dni);
-            setTotalGhi(prevTotal => prevTotal + item.ghi);
         });
 
         return aggregatedData;
+    };    
+    /*
+    // Cálculo da Moda
+    const calculateMode = (array) => {
+        let modeMap = {};
+        let maxCount = 0;
+        let modes = [];
+  
+        array.forEach((value) => {
+            if (!modeMap[value]) {
+                modeMap[value] = 1;
+            } else {
+                modeMap[value]++;
+            }
+  
+            if (modeMap[value] > maxCount) {
+                modes = [value];
+                maxCount = modeMap[value];
+            } else if (modeMap[value] === maxCount) {
+                modes.push(value);
+            }
+        });
+  
+        if (modes.length === Object.keys(modeMap).length) {
+            modes = [];
+        }
+  
+        return modes;
+    };
+    */
+    // Cálculo da Mediana
+    const calculateMedian = (array) => {
+        const sortedArray = array.slice().sort((a, b) => a - b);
+        const arrayLength = sortedArray.length;
+        const middleIndex = Math.floor(arrayLength / 2);
+  
+        if (arrayLength % 2 === 0) {
+            return (sortedArray[middleIndex - 1] + sortedArray[middleIndex]) / 2;
+        } else {
+            return sortedArray[middleIndex];
+        }
     };
 
     // Atualiza os dados
@@ -68,6 +113,41 @@ const SolarIrradiance = () => {
             if (response.ok) {
                 const data = await response.json();
                 setDados(data);
+
+                // Média de DNI
+                const sumDNI = data.reduce((acc, item) => acc + item.dni, 0);
+                const averageDNI = sumDNI / data.length;
+                setAverageDNI(averageDNI);
+
+                // Média de GHI
+                const sumGHI = data.reduce((acc, item) => acc + item.ghi, 0);
+                const averageGHI = sumGHI / data.length;
+                setAverageGHI(averageGHI);
+
+                // Cria um array com todos os registros de DNI
+                const dniArray = data.map(item => item.dni);
+                setDniValues(dniArray);
+
+                // Cria um array com todos os registros de DNI
+                const ghiArray = data.map(item => item.ghi);
+                setGhiValues(ghiArray);
+
+                // Calcular a moda - DNI
+                const dniMode = calculateMode(dniArray);
+                setDniMode(dniMode);
+
+                // Calcular a moda - GHI
+                const ghiMode = calculateMode(ghiArray);
+                setGhiMode(ghiMode);
+
+                // Calcular a mediana - DNI
+                const dniMedian = calculateMedian(dniArray);
+                setDniMedian(dniMedian);
+
+                // Calcular a mediana - GHI
+                const ghiMedian = calculateMedian(ghiArray);
+                setGhiMedian(ghiMedian);
+
             } else {
                 console.error('Erro ao buscar os dados');
             }
@@ -189,8 +269,12 @@ const SolarIrradiance = () => {
                 {chartData.afternoon}
                 {chartData.evening}
                 {chartData.midnight}
-                <Text style={{ textAlign: 'center', color: 'black' }}>Total DNI: {totalDni}</Text>
-                <Text style={{ textAlign: 'center', color: 'black' }}>Total GHI: {totalGhi}</Text>
+                <Text>Média de DNI: {averageDNI.toFixed(2)}</Text>
+                <Text>Média de GHI: {averageGHI.toFixed(2)}</Text>
+                <Text>Moda de DNI: {dniMode.join(', ')}</Text>
+                <Text>Moda de GHI: {ghiMode.join(', ')}</Text>
+                <Text>Mediana de DNI: {dniMedian}</Text>
+                <Text>Mediana de GHI: {ghiMedian}</Text>
             </View>
         </ScrollView>
     );

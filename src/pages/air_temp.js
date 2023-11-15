@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Text, TextInput, Button } from 'react-native';
 import { VictoryChart, VictoryLine, VictoryTheme } from 'victory-native';
+import calculateMode from '../../backend/global_functions/mode';
+import calculateMedian from '../../backend/global_functions/median';
+import calculateStandardDeviation from '../../backend/global_functions/standard_deviation';
+import calculateSkewness from '../../backend/global_functions/skewness';
+import calculateKurtosis from '../../backend/global_functions/kurtosis';
 
 const AirTemp = () => {
     const [dados, setDados] = useState([]);
@@ -59,86 +64,6 @@ const AirTemp = () => {
             }
         });
         return aggregatedData;
-    };
-
-    // Cálculo da Moda
-    const calculateMode = (array) => {
-        let modeMap = {};
-        let maxCount = 0;
-        let modes = [];
-  
-        array.forEach((value) => {
-            if (!modeMap[value]) {
-                modeMap[value] = 1;
-            } else {
-                modeMap[value]++;
-            }
-  
-            if (modeMap[value] > maxCount) {
-                modes = [value];
-                maxCount = modeMap[value];
-            } else if (modeMap[value] === maxCount) {
-                modes.push(value);
-            }
-        });
-  
-        if (modes.length === Object.keys(modeMap).length) {
-            modes = [];
-        }
-  
-        return modes;
-    };
-
-    // Cálculo da Mediana
-    const calculateMedian = (array) => {
-        const sortedArray = array.slice().sort((a, b) => a - b);
-        const arrayLength = sortedArray.length;
-        const middleIndex = Math.floor(arrayLength / 2);
-  
-        if (arrayLength % 2 === 0) {
-            return (sortedArray[middleIndex - 1] + sortedArray[middleIndex]) / 2;
-        } else {
-            return sortedArray[middleIndex];
-        }
-    };
-
-    // Cálculo do Desvio Padrão
-    const calculateStandardDeviation = (array) => {
-        const n = array.length;
-        const mean = array.reduce((acc, val) => acc + val, 0) / n;
-      
-        const squaredDifferences = array.map(val => Math.pow(val - mean, 2));
-        const meanSquaredDifferences = squaredDifferences.reduce((acc, val) => acc + val, 0) / n;
-  
-        const standardDeviation = Math.sqrt(meanSquaredDifferences);
-        return standardDeviation;
-    };
-
-    // Cálculo da Assimetria
-    const calculateSkewness = (array) => {
-        const n = array.length;
-        const mean = array.reduce((acc, val) => acc + val, 0) / n;
-        const variance = array.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / n;
-        const stdDev = Math.sqrt(variance);
-  
-        const skewness =
-        (1 / n) *
-        array.reduce((acc, val) => acc + Math.pow(val - mean, 3), 0) /
-        Math.pow(stdDev, 3);
-  
-        return skewness;
-    };
-
-    // Cálculo da Curtose
-    const calculateKurtosis = (array) => {
-        const n = array.length;
-        const mean = array.reduce((acc, val) => acc + val, 0) / n;
-        const stdDev = calculateStandardDeviation(array); // Utilize a função de cálculo do desvio padrão que você já implementou
-      
-        const sumPow4 = array.reduce((acc, val) => acc + Math.pow(val - mean, 4), 0);
-        const kurtosis = (sumPow4 / n) / Math.pow(stdDev, 4) - 3;
-  
-        return kurtosis;
     };
 
     // Função para calcular a probabilidade normal
