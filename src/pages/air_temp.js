@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TextInput, Button } from 'react-native';
+import { View, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
 import { VictoryChart, VictoryLine, VictoryTheme } from 'victory-native';
 import calculateMode from '../../backend/global_functions/mode';
 import calculateMedian from '../../backend/global_functions/median';
@@ -19,7 +19,6 @@ const AirTemp = () => {
     const [standardDeviationAirTemp, setStandardDeviationAirTemp] = useState(0);
     const [skewnessAirTemp, setSkewnessAirTemp] = useState(0);
     const [kurtosis, setKurtosis] = useState(0);
-    const [probability, setProbability] = useState(0);
 
     // Busca pelos dados no período informado
     useEffect(() => {
@@ -66,30 +65,6 @@ const AirTemp = () => {
         return aggregatedData;
     };
 
-    // Função para calcular a probabilidade normal
-    const calculateNormalProbability = (value, mean, stdDev) => {
-        // Fórmula da função de distribuição cumulativa
-        const x = (value - mean) / stdDev;
-        const prob = (1 + erf(x / Math.sqrt(2))) / 2;
-        return prob;
-    };
-
-    // Função erf (função de erro)
-    const erf = (z) => {
-        const t = 1.0 / (1.0 + 0.5 * Math.abs(z));
-        const erfRes = 1 - t * Math.exp(-z * z - 1.26551223 +
-        t * (1.00002368 +
-        t * (0.37409196 +
-        t * (0.09678418 +
-        t * (-0.18628806 +
-        t * (0.27886807 +
-        t * (-1.13520398 +
-        t * (1.48851587 +
-        t * (-0.82215223 +
-        t * (0.17087277))))))))));
-        return z >= 0 ? erfRes : -erfRes;
-    };
-
     const handleStartDateChange = (text) => {
         setStartDate(text);
     };
@@ -107,9 +82,11 @@ const AirTemp = () => {
                 const data = await response.json();
                 setDados(data);
 
+                
                 // Soma a temperatura total
                 const sum = data.reduce((acc, item) => acc + item.air_temp, 0);
                 setTotalAirTemp(sum);
+                
 
                 // Calcula a média
                 const average = sum / data.length;
@@ -139,11 +116,6 @@ const AirTemp = () => {
                 const kurtosis = calculateKurtosis(airTempArray);
                 setKurtosis(kurtosis);
 
-                // Calcular a probabilidade normal
-                const probabilityValue = 70; // Valor de air_temp para calcular a probabilidade (70%)
-                const probability = calculateNormalProbability(probabilityValue, averageAirTemp, standardDeviationAirTemp);
-                setProbability(probability);
-                //console.log(`Probabilidade de air_temp ser menor que ${probabilityValue}: ${probability}`);
             } else {
                 console.error('Erro ao buscar os dados');
             }
@@ -170,7 +142,7 @@ const AirTemp = () => {
 
         return (
             <View key={index}>
-                <Text>{period.name}</Text>
+                <Text style={{ color: 'black', fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginTop: 8 }}>{period.name}</Text>
                 <VictoryChart width={408} height={270} theme={VictoryTheme.grayscale}>
                     <VictoryLine
                         style={{ data: { stroke: '#c43a31' }, parent: { border: '1px solid #ccc' } }}
@@ -182,34 +154,54 @@ const AirTemp = () => {
       });
     };
 
-  return (
-      <ScrollView>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10 }}>
-              <TextInput
-                  style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1, marginRight: 5 }}
-                  onChangeText={handleStartDateChange}
-                  value={startDate}
-                  placeholder="Data inicial (YYYY-MM-DD)"
-              />
-              <TextInput
-                  style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1, marginLeft: 5 }}
-                  onChangeText={handleEndDateChange}
-                  value={endDate}
-                  placeholder="Data final (YYYY-MM-DD)"
-              />
-              <Button title="Buscar Dados" onPress={fetchNewData} />
-          </View>
-          {renderCharts()}
-          <Text>Temperatura Total: {totalAirTemp}</Text>
-          <Text>Moda: {modeAirTemp.join(', ')}</Text>
-          <Text>Média: {averageAirTemp.toFixed(2)}</Text>
-          <Text>Mediana: {medianAirTemp}</Text>
-          <Text>Desvio Padrão: {standardDeviationAirTemp.toFixed(2)}</Text>
-          <Text>Assimetria: {skewnessAirTemp.toFixed(2)}</Text>
-          <Text>Curtose: {kurtosis.toFixed(2)}</Text>
-          <Text>Probabilidade: {probability}</Text>
-      </ScrollView>
-  );
+    return (
+        <ScrollView>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10 }}>
+                <TextInput
+                    style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1, marginRight: 10, textAlign: 'center' }}
+                    onChangeText={handleStartDateChange}
+                    value={startDate}
+                    placeholder="Data inicial (YYYY-MM-DD)"
+                />
+                <TextInput
+                    style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1, marginRight: 10, textAlign: 'center' }}
+                    onChangeText={handleEndDateChange}
+                    value={endDate}
+                    placeholder="Data final (YYYY-MM-DD)"
+                />
+                <TouchableOpacity
+                    style={{ backgroundColor: '#2d81c2', padding: 10, borderRadius: 3, height: 40, width: 100, alignItems: 'center', justifyContent: 'center', padding: '110' }}
+                    onPress={fetchNewData}
+                >
+                    <Text style={{ color: '#fff', fontSize: 18 }}>Buscar</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{ borderWidth: 1, borderColor: 'black', padding: 10, borderRadius: 5, marginBottom: 20, marginLeft: 8, marginRight: 8 }}>
+                <Text style={{ color: 'black', fontSize: 20, marginLeft: 82, marginBottom: 13, fontWeight: 'bold' }}>
+                    Cálculos Estatísticos
+                </Text>
+                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
+                    <Text style={{ fontWeight: 'bold' }}>Moda:</Text> {modeAirTemp.join(', ')}
+                </Text>
+                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
+                    <Text style={{ fontWeight: 'bold' }}>Média:</Text> {averageAirTemp.toFixed(2)}
+                </Text>
+                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
+                    <Text style={{ fontWeight: 'bold' }}>Mediana:</Text> {medianAirTemp}
+                </Text>
+                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
+                    <Text style={{ fontWeight: 'bold' }}>Desvio Padrão: </Text> {standardDeviationAirTemp.toFixed(2)}
+                </Text>
+                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
+                    <Text style={{ fontWeight: 'bold' }}>Assimetria:</Text> {skewnessAirTemp.toFixed(2)}
+                </Text>
+                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
+                    <Text style={{ fontWeight: 'bold' }}>Curtose:</Text> {kurtosis.toFixed(2)}
+                </Text>
+            </View>
+            {renderCharts()}
+        </ScrollView>
+    );
 };
 
 export default AirTemp;

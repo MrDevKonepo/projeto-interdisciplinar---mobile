@@ -16,7 +16,7 @@ export default function Routes() {
                     title: 'LOGIN',
                     headerTitleAlign: 'center',
                     headerStyle:{
-                        backgroundColor:'#3498db',
+                        backgroundColor:'#2d81c2',
                     },
                     headerTitleStyle:{
                         fontWeight: 'bold',
@@ -29,7 +29,7 @@ export default function Routes() {
                     headerTintColor: '#fff',
                     headerLeft: null,
                     headerStyle:{
-                        backgroundColor:'#3498db',
+                        backgroundColor:'#2d81c2',
                     },
                     headerTitleStyle:{
                         fontWeight: 'bold',
@@ -42,7 +42,7 @@ export default function Routes() {
                     headerTintColor: '#fff',
                     headerLeft: null,
                     headerStyle:{
-                        backgroundColor:'#3498db',
+                        backgroundColor: '#2d81c2', //'#3498db',
                     },
                     headerTitleStyle:{
                         fontWeight: 'bold',
@@ -52,7 +52,7 @@ export default function Routes() {
                 <Stack.Screen name="solar_irradiance" component={SolarIrradiance} options={{
                     title: 'Irradiação Solar',
                     headerTitleAlign: 'center',
-                    headerTintColor: '#fff',
+                    headerTintColor: '#2d81c2',
                     headerLeft: null,
                     headerStyle:{
                         backgroundColor:'#3498db',
