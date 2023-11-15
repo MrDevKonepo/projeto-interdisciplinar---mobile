@@ -3,6 +3,10 @@ import { View, Text, TextInput, Button, Alert, ScrollView } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import geracaoStyles from '../styles/style_geracao';
 import calculateMode from '../../backend/global_functions/mode';
+import calculateMedian from '../../backend/global_functions/median';
+import calculateStandardDeviation from '../../backend/global_functions/standard_deviation';
+import calculateSkewness from '../../backend/global_functions/skewness';
+import calculateKurtosis from '../../backend/global_functions/kurtosis';
 
 const SolarIrradiance = () => {
     const [dados, setDados] = useState([]);
@@ -20,6 +24,12 @@ const SolarIrradiance = () => {
     const [ghiMode, setGhiMode] = useState([]);
     const [dniMedian, setDniMedian] = useState([]);
     const [ghiMedian, setGhiMedian] = useState([]);
+    const [dniStandardDeviation, setDniStandardDeviation] = useState(0);
+    const [ghiStandardDeviation, setGhiStandardDeviation] = useState(0);
+    const [dniSkewness, setDniSkewness] = useState(0);
+    const [ghiSkewness, setGhiSkewness] = useState(0);
+    const [dniKurtosis, setDniKurtosis] = useState(0);
+    const [ghiKurtosis, setGhiKurtosis] = useState(0);
 
     const handleStartDateChange = (text) => {
         setStartDate(text);
@@ -63,47 +73,6 @@ const SolarIrradiance = () => {
 
         return aggregatedData;
     };    
-    /*
-    // Cálculo da Moda
-    const calculateMode = (array) => {
-        let modeMap = {};
-        let maxCount = 0;
-        let modes = [];
-  
-        array.forEach((value) => {
-            if (!modeMap[value]) {
-                modeMap[value] = 1;
-            } else {
-                modeMap[value]++;
-            }
-  
-            if (modeMap[value] > maxCount) {
-                modes = [value];
-                maxCount = modeMap[value];
-            } else if (modeMap[value] === maxCount) {
-                modes.push(value);
-            }
-        });
-  
-        if (modes.length === Object.keys(modeMap).length) {
-            modes = [];
-        }
-  
-        return modes;
-    };
-    */
-    // Cálculo da Mediana
-    const calculateMedian = (array) => {
-        const sortedArray = array.slice().sort((a, b) => a - b);
-        const arrayLength = sortedArray.length;
-        const middleIndex = Math.floor(arrayLength / 2);
-  
-        if (arrayLength % 2 === 0) {
-            return (sortedArray[middleIndex - 1] + sortedArray[middleIndex]) / 2;
-        } else {
-            return sortedArray[middleIndex];
-        }
-    };
 
     // Atualiza os dados
     const fetchNewData = async () => {
@@ -147,6 +116,31 @@ const SolarIrradiance = () => {
                 // Calcular a mediana - GHI
                 const ghiMedian = calculateMedian(ghiArray);
                 setGhiMedian(ghiMedian);
+
+                // Calcular o desvio padrão - DNI
+                const dniStandardDeviation = calculateStandardDeviation(dniArray);
+                setDniStandardDeviation(dniStandardDeviation);
+
+                // Calcular o desvio padrão - GHI
+                const ghiStandardDeviation = calculateStandardDeviation(ghiArray);
+                setGhiStandardDeviation(ghiStandardDeviation);
+
+                // Calcular a assimetria - DNI
+                const dniSkewness = calculateSkewness(dniArray);
+                setDniSkewness(dniSkewness);
+
+                // Calcular a assimetria - GHI
+                const ghiSkewness = calculateSkewness(ghiArray);
+                setGhiSkewness(ghiSkewness);
+
+                // Calcular a curtose - DNI
+                const dniKurtosis = calculateKurtosis(dniArray);
+                setDniKurtosis(dniKurtosis);
+
+                // Calcular a curtose - GHI
+                const ghiKurtosis = calculateKurtosis(ghiArray);
+                setGhiKurtosis(ghiKurtosis);
+
 
             } else {
                 console.error('Erro ao buscar os dados');
@@ -275,6 +269,12 @@ const SolarIrradiance = () => {
                 <Text>Moda de GHI: {ghiMode.join(', ')}</Text>
                 <Text>Mediana de DNI: {dniMedian}</Text>
                 <Text>Mediana de GHI: {ghiMedian}</Text>
+                <Text>Desvio Padrão de DNI: {dniStandardDeviation.toFixed(2)}</Text>
+                <Text>Desvio Padrão de GHI: {ghiStandardDeviation.toFixed(2)}</Text>
+                <Text>Assimetria de DNI: {dniSkewness.toFixed(2)}</Text>
+                <Text>Assimetria de GHI: {ghiSkewness.toFixed(2)}</Text>
+                <Text>Curtose de DNI: {dniKurtosis.toFixed(2)}</Text>
+                <Text>Curtose de GHI: {ghiKurtosis.toFixed(2)}</Text>
             </View>
         </ScrollView>
     );
