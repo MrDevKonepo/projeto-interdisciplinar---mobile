@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import styles from '../styles/styles_login';
+import { ImageBackground } from 'react-native';
 
 const Login = () => {
 
@@ -19,53 +21,29 @@ const Login = () => {
 
     return (
         <View style={styles.container}>
-            <TextInput
-            style={styles.input}
-            placeholder='E-mail'
-            value={email}
-            onChangeText={setEmail}
+            <Image
+                source={require('../files/logo_solaire.jpg')}
+                style={styles.logo}
+                resizeMode='contain'
             />
             <TextInput
-            style={styles.input}
-            placeholder='Senha'
-            secureTextEntry={true}
-            value={password}
-            onChangeText={setPassword}
+                style={styles.input}
+                placeholder='E-mail'
+                value={email}
+                onChangeText={setEmail}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder='Senha'
+                secureTextEntry={true}
+                value={password}
+                onChangeText={setPassword}
             />
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Entrar</Text>
             </TouchableOpacity>
         </View>
     );
-
 }
-
-const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#fff',
-    },
-    input:{
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 10,
-        marginVertical:10,
-        width: '80%',
-    },
-    button:{
-        backgroundColor: '#3498db',
-        borderRadius: 5,
-        padding: 10,
-        width: '80%',
-        alignItems: 'center',
-    },
-    buttonText:{
-        color: '#fff',
-        fontWeight: 'bold',
-    }
-});
 
 export default Login;
