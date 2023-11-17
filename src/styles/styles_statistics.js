@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
         color: 'black'
     },
 
+    // FIM das legendas
 
     // CSS dos cálculos estatísticos
 

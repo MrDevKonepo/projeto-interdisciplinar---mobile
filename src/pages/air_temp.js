@@ -6,6 +6,7 @@ import calculateMedian from '../../backend/global_functions/median';
 import calculateStandardDeviation from '../../backend/global_functions/standard_deviation';
 import calculateSkewness from '../../backend/global_functions/skewness';
 import calculateKurtosis from '../../backend/global_functions/kurtosis';
+import styles from '../styles/styles_statistics';
 
 const AirTemp = () => {
     const [dados, setDados] = useState([]);
@@ -176,30 +177,40 @@ const AirTemp = () => {
                     <Text style={{ color: '#fff', fontSize: 18 }}>Buscar</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{ borderWidth: 1, borderColor: 'black', padding: 10, borderRadius: 5, marginBottom: 20, marginLeft: 8, marginRight: 8 }}>
-                <Text style={{ color: 'black', fontSize: 20, marginLeft: 82, marginBottom: 13, fontWeight: 'bold' }}>
-                    Cálculos Estatísticos
-                </Text>
-                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
-                    <Text style={{ fontWeight: 'bold' }}>Moda:</Text> {modeAirTemp.join(', ')}
-                </Text>
-                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
-                    <Text style={{ fontWeight: 'bold' }}>Média:</Text> {averageAirTemp.toFixed(2)}
-                </Text>
-                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
-                    <Text style={{ fontWeight: 'bold' }}>Mediana:</Text> {medianAirTemp}
-                </Text>
-                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
-                    <Text style={{ fontWeight: 'bold' }}>Desvio Padrão: </Text> {standardDeviationAirTemp.toFixed(2)}
-                </Text>
-                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
-                    <Text style={{ fontWeight: 'bold' }}>Assimetria:</Text> {skewnessAirTemp.toFixed(2)}
-                </Text>
-                <Text style={{ color: 'black', fontSize: 17, marginLeft: 1, marginBottom: 4 }}>
-                    <Text style={{ fontWeight: 'bold' }}>Curtose:</Text> {kurtosis.toFixed(2)}
-                </Text>
-            </View>
             {renderCharts()}
+            <Text style={ styles.statisticsTitle }>
+                Cálculos Estatísticos
+            </Text>
+            <View style={ styles.statisticsContainer }>
+                <View style={ styles.statisticsContainerLegend }>
+                    <Text style={ styles.statisticsLegend } >Moda</Text>    
+                    <Text style={ styles.statisticsValue }>{modeAirTemp.join(', ')}</Text>
+                </View>
+                <View style={ styles.statisticsContainerLegend }>
+                    <Text style={ styles.statisticsLegend } >Média</Text>    
+                    <Text style={ styles.statisticsValue }>{averageAirTemp.toFixed(2)}</Text>
+                </View>
+            </View>
+            <View style={ styles.statisticsContainer }>
+                <View style={ styles.statisticsContainerLegend }>
+                    <Text style={ styles.statisticsLegend } >Mediana</Text>    
+                    <Text style={ styles.statisticsValue }>{medianAirTemp}</Text>
+                </View>
+                <View style={ styles.statisticsContainerLegend }>
+                    <Text style={ styles.statisticsLegend } >Curtose</Text>    
+                    <Text style={ styles.statisticsValue }>{kurtosis.toFixed(2)}</Text>
+                </View>
+            </View>
+            <View style={ styles.statisticsContainer }>
+                <View style={ styles.statisticsContainerLegend }>
+                    <Text style={ styles.statisticsLegend } >Desvio Padrão</Text>    
+                    <Text style={ styles.statisticsValue }>{standardDeviationAirTemp.toFixed(2)}</Text>
+                </View>
+                <View style={ styles.statisticsContainerLegend }>
+                    <Text style={ styles.statisticsLegend } >Assimetria</Text>    
+                    <Text style={ styles.statisticsValue }>{skewnessAirTemp.toFixed(2)}</Text>
+                </View>
+            </View>
         </ScrollView>
     );
 };

@@ -7,7 +7,7 @@ import calculateMedian from '../../backend/global_functions/median';
 import calculateStandardDeviation from '../../backend/global_functions/standard_deviation';
 import calculateSkewness from '../../backend/global_functions/skewness';
 import calculateKurtosis from '../../backend/global_functions/kurtosis';
-import styles from '../styles/styles_solar_irradiance';
+import styles from '../styles/styles_statistics';
 
 const SolarIrradiance = () => {
     const [dados, setDados] = useState([]);
