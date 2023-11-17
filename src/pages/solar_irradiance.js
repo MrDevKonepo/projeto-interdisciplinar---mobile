@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, Alert, ScrollView, TouchableOpacity} from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import geracaoStyles from '../styles/style_geracao';
 import calculateMode from '../../backend/global_functions/mode';
@@ -7,6 +7,7 @@ import calculateMedian from '../../backend/global_functions/median';
 import calculateStandardDeviation from '../../backend/global_functions/standard_deviation';
 import calculateSkewness from '../../backend/global_functions/skewness';
 import calculateKurtosis from '../../backend/global_functions/kurtosis';
+import styles from '../styles/styles_solar_irradiance';
 
 const SolarIrradiance = () => {
     const [dados, setDados] = useState([]);
@@ -183,6 +184,7 @@ const SolarIrradiance = () => {
 
         return (
             <View key={datasetKey}>
+                <Text style={{ color: 'black', fontSize: 16, fontWeight: 'bold', textAlign: 'center', marginTop: 7, marginBottom: 5 }}>{label}</Text>
                 <LineChart
                     style={{ margin: 8 }}
                     data={chartData[datasetKey]}
@@ -192,7 +194,7 @@ const SolarIrradiance = () => {
                         backgroundGradientFrom: 'white',
                         backgroundGradientTo: 'white',
                         color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                        strokeWidth: 2,
+                        strokeWidth: 2
                     }}
                     onDataPointClick={({ value, dataset, getColor }) => handleDataPointClick(value, dataset, getColor)}
                 />
@@ -209,10 +211,10 @@ const SolarIrradiance = () => {
             const midnightData = aggregateDataByHour(dados, startDate, endDate, 0, 5);
 
             setChartData({
-                morning:   renderChart(morningData  , 'Irradiação Solar Manhã'    , '0, 0, 255', '0, 128, 0', 'morning'),
-                afternoon: renderChart(afternoonData, 'Irradiação Solar Tarde'    , '0, 0, 255', '0, 128, 0', 'afternoon'),
-                evening:   renderChart(eveningData  , 'Irradiação Solar Noite'    , '0, 0, 255', '0, 128, 0', 'evening'),
-                midnight:  renderChart(midnightData , 'Irradiação Solar Madrugada', '0, 0, 255', '0, 128, 0', 'midnight'),
+                morning:   renderChart(morningData  , 'Manhã'    , '0, 0, 255', '0, 128, 0', 'morning'),
+                afternoon: renderChart(afternoonData, 'Tarde'    , '0, 0, 255', '0, 128, 0', 'afternoon'),
+                evening:   renderChart(eveningData  , 'Noite'    , '0, 0, 255', '0, 128, 0', 'evening'),
+                midnight:  renderChart(midnightData , 'Madrugada', '0, 0, 255', '0, 128, 0', 'midnight'),
             });
         }
     }, [dados]);
@@ -236,45 +238,102 @@ const SolarIrradiance = () => {
     return (
         <ScrollView>
             <View>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10 }}>
+                <View style={ styles.dataFilterContainer }>
                     <TextInput
-                        style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1, marginRight: 5 }}
+                        style={ styles.dataFilterInput }
                         onChangeText={handleStartDateChange}
                         value={startDate}
                         placeholder="Data inicial (YYYY-MM-DD)"
                     />
                     <TextInput
-                        style={{ height: 40, borderColor: 'gray', borderWidth: 1, flex: 1, marginRight: 5 }}
+                        style={ styles.dataFilterInput }
                         onChangeText={handleEndDateChange}
                         value={endDate}
                         placeholder="Data final (YYYY-MM-DD)"
                     />
-                    <Button title="Buscar Dados" onPress={fetchNewData} />
+                    <TouchableOpacity
+                        style={ styles.dataFilterButton }
+                        onPress={fetchNewData}
+                    >
+                        <Text style={ styles.dataFilterButtonTitle }>Buscar</Text>
+                    </TouchableOpacity>
                 </View>
-                <View style={{ alignItems: 'center', marginLeft: 70, marginTop: 10, flexDirection: 'row', justifyContent: 'left' }}>
+                <View style={ styles.graphicLegendsContainer }>
                     <View style={{ backgroundColor: `rgb(${dniColor})`, width: 15, height: 15, borderRadius: 1, marginRight: 5 }} />
-                    <Text style={{ textAlign: 'center', color: 'black' }}>Irradiação Solar Direta Normal (DNI)</Text>
+                    <Text style={ styles.graphicLegendsText }>Irradiação Solar Direta Normal (DNI)</Text>
                 </View>
-                <View style={{ alignItems: 'center', marginLeft: 70, marginTop: 10, marginVertical: 15, flexDirection: 'row', justifyContent: 'left' }}>
+                <View style={ styles.graphicLegendsContainer }>
                     <View style={{ backgroundColor: `rgb(${ghiColor})`, width: 15, height: 15, borderRadius: 1, marginRight: 5 }} />
-                    <Text style={{ textAlign: 'center', color: 'black' }}>Irradiação Solar Global Horizontal (GHI)</Text>
+                    <Text style={ styles.graphicLegendsText }>Irradiação Solar Global Horizontal (GHI)</Text>
                 </View>
+                <Text styles={{ margin: 10 }} />
                 {chartData.morning}
                 {chartData.afternoon}
                 {chartData.evening}
                 {chartData.midnight}
-                <Text>Média de DNI: {averageDNI.toFixed(2)}</Text>
-                <Text>Média de GHI: {averageGHI.toFixed(2)}</Text>
-                <Text>Moda de DNI: {dniMode.join(', ')}</Text>
-                <Text>Moda de GHI: {ghiMode.join(', ')}</Text>
-                <Text>Mediana de DNI: {dniMedian}</Text>
-                <Text>Mediana de GHI: {ghiMedian}</Text>
-                <Text>Desvio Padrão de DNI: {dniStandardDeviation.toFixed(2)}</Text>
-                <Text>Desvio Padrão de GHI: {ghiStandardDeviation.toFixed(2)}</Text>
-                <Text>Assimetria de DNI: {dniSkewness.toFixed(2)}</Text>
-                <Text>Assimetria de GHI: {ghiSkewness.toFixed(2)}</Text>
-                <Text>Curtose de DNI: {dniKurtosis.toFixed(2)}</Text>
-                <Text>Curtose de GHI: {ghiKurtosis.toFixed(2)}</Text>
+                <Text style={ styles.statisticsTitle }>
+                    Cálculos Estatísticos
+                </Text>
+                <View style={ styles.statisticsContainer }>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Média de DNI</Text>    
+                        <Text style={ styles.statisticsValue }>{averageDNI.toFixed(2)}</Text>
+                    </View>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Média de GHI</Text>    
+                        <Text style={ styles.statisticsValue }>{averageGHI.toFixed(2)}</Text>
+                    </View>
+                </View>
+                <View style={ styles.statisticsContainer }>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Moda de DNI</Text>    
+                        <Text style={ styles.statisticsValue }>{dniMode.join(', ')}</Text>
+                    </View>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Moda de GHI</Text>    
+                        <Text style={ styles.statisticsValue }>{ghiMode.join(', ')}</Text>
+                    </View>
+                </View>
+                <View style={ styles.statisticsContainer }>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Mediana de DNI</Text>    
+                        <Text style={ styles.statisticsValue }>{dniMedian}</Text>
+                    </View>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Mediana de GHI</Text>    
+                        <Text style={ styles.statisticsValue }>{ghiMedian}</Text>
+                    </View>
+                </View>
+                <View style={ styles.statisticsContainer }>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Desvio Padrão de DNI</Text>    
+                        <Text style={ styles.statisticsValue }>{dniStandardDeviation.toFixed(2)}</Text>
+                    </View>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Desvio Padrão de GHI</Text>    
+                        <Text style={ styles.statisticsValue }>{ghiStandardDeviation.toFixed(2)}</Text>
+                    </View>
+                </View>
+                <View style={ styles.statisticsContainer }>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Assimetria de DNI</Text>    
+                        <Text style={ styles.statisticsValue }>{dniSkewness.toFixed(2)}</Text>
+                    </View>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Assimetria de GHI</Text>    
+                        <Text style={ styles.statisticsValue }>{ghiSkewness.toFixed(2)}</Text>
+                    </View>
+                </View>
+                <View style={ styles.statisticsContainer }>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Curtose de DNI</Text>    
+                        <Text style={ styles.statisticsValue }>{dniKurtosis.toFixed(2)}</Text>
+                    </View>
+                    <View style={ styles.statisticsContainerLegend }>
+                        <Text style={ styles.statisticsLegend } >Curtose de GHI</Text>    
+                        <Text style={ styles.statisticsValue }>{ghiKurtosis.toFixed(2)}</Text>
+                    </View>
+                </View>
             </View>
         </ScrollView>
     );
