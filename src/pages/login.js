@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from '../styles/styles_login';
-import { ImageBackground } from 'react-native';
 
 const Login = () => {
 

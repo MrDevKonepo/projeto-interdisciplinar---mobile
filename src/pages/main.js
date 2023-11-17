@@ -1,8 +1,12 @@
-import { StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React from 'react';
+import { View, TouchableOpacity, Image, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import styles from '../styles/styles_main';
+
 
 const Main = () => {
-
     const navigation = useNavigation();
 
     const handleAirTemp = () => {
@@ -13,45 +17,23 @@ const Main = () => {
         navigation.navigate('solar_irradiance');
     }
 
-    return(
+    return (
         <View style={styles.container}>
+            <Image
+                source={require('../files/logo_solaire.jpg')}
+                style={styles.logo}
+                resizeMode='contain'
+            />
             <TouchableOpacity style={styles.button} onPress={handleAirTemp}>
-                <Text style={styles.buttonText}>Temperatura do Ar</Text>
+                <FontAwesome5 name="temperature-high" size={53} color="#000" />
+                <Text style={ styles.buttonText } >Temperatura do Ar</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={handleSolarIrradiance}>
-                <Text style={styles.buttonText}>Irradiação Solar</Text>
+                <MaterialIcons name="solar-power" size={53} color="#000" />
+                <Text style={ styles.buttonText } >Irradiação Solar</Text>
             </TouchableOpacity>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container:{
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#fff',
-    },
-    input:{
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        padding: 10,
-        marginVertical:10,
-        width: '80%',
-    },
-    button:{
-        backgroundColor: '#2d81c2',
-        borderRadius: 5,
-        padding: 10,
-        width: '80%',
-        alignItems: 'center',
-        margin: 10
-    },
-    buttonText:{
-        color: '#fff',
-        fontWeight: 'bold',
-    }
-});
 
 export default Main;
