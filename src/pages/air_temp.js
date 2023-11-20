@@ -10,8 +10,8 @@ import styles from '../styles/styles_statistics';
 
 const AirTemp = () => {
     const [dados, setDados] = useState([]);
-    const [startDate, setStartDate] = useState('2021-01-01');
-    const [endDate, setEndDate] = useState('2021-01-01');
+    const [startDate, setStartDate] = useState(0);
+    const [endDate, setEndDate] = useState(0);
     const [totalAirTemp, setTotalAirTemp] = useState(0);
     const [averageAirTemp, setAverageAirTemp] = useState(0);
     const [airTempValues, setAirTempValues] = useState(0);
@@ -20,29 +20,7 @@ const AirTemp = () => {
     const [standardDeviationAirTemp, setStandardDeviationAirTemp] = useState(0);
     const [skewnessAirTemp, setSkewnessAirTemp] = useState(0);
     const [kurtosis, setKurtosis] = useState(0);
-
-    // Busca pelos dados no período informado
-    useEffect(() => {
-        async function fetchDados() {
-            try {
-                const startDate = '2021-01-01';
-                const endDate = '2021-01-01';
-                const response = await fetch(`http://192.168.100.60:3000/api/dadosSolares/date/${startDate}/${endDate}`);
-        
-                if (response.ok) {
-                    const data = await response.json();
-                    setDados(data);
-                } else {
-                    console.error('Erro ao buscar os dados');
-                }
-            } catch (error) {
-                console.error('Erro ao buscar os dados: ', error);
-            }
-        }
-
-        fetchDados();
-    }, []);
-
+    
     // Agrupa os dados por hora
     const aggregateDataByHour = (data, periodStart, periodEnd) => {
         const filteredData = data.filter(item => {
@@ -118,7 +96,7 @@ const AirTemp = () => {
                 setKurtosis(kurtosis);
 
             } else {
-                console.error('Erro ao buscar os dados');
+                alert("Não existem dados para o período informado");
             }
         } catch (error) {
             console.error('Erro ao buscar os dados: ', error);

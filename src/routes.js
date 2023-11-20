@@ -42,7 +42,7 @@ export default function Routes() {
                     headerTintColor: '#fff',
                     headerLeft: null,
                     headerStyle:{
-                        backgroundColor: '#2d81c2', //'#3498db',
+                        backgroundColor: '#2d81c2',
                     },
                     headerTitleStyle:{
                         fontWeight: 'bold',

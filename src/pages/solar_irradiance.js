@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Alert, ScrollView, TouchableOpacity} from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import geracaoStyles from '../styles/style_geracao';
 import calculateMode from '../../backend/global_functions/mode';
 import calculateMedian from '../../backend/global_functions/median';
 import calculateStandardDeviation from '../../backend/global_functions/standard_deviation';
@@ -11,8 +10,8 @@ import styles from '../styles/styles_statistics';
 
 const SolarIrradiance = () => {
     const [dados, setDados] = useState([]);
-    const [startDate, setStartDate] = useState('2021-01-01');
-    const [endDate, setEndDate] = useState('2021-01-01');
+    const [startDate, setStartDate] = useState(0);
+    const [endDate, setEndDate] = useState(0);
     const [selectedDataPoint, setSelectedDataPoint] = useState(null);
     const [chartData, setChartData] = useState({});
     const dniColor = '0, 0, 255';
