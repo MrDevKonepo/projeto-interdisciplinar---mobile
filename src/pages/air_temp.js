@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
-import { VictoryChart, VictoryLine, VictoryTheme } from 'victory-native';
+import { View, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';10
+import { VictoryChart, VictoryLine, VictoryTheme, VictoryAxis } from 'victory-native';
 import calculateMode from '../../backend/global_functions/mode';
 import calculateMedian from '../../backend/global_functions/median';
 import calculateStandardDeviation from '../../backend/global_functions/standard_deviation';
@@ -10,8 +10,8 @@ import styles from '../styles/styles_statistics';
 
 const AirTemp = () => {
     const [dados, setDados] = useState([]);
-    const [startDate, setStartDate] = useState(0);
-    const [endDate, setEndDate] = useState(0);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [totalAirTemp, setTotalAirTemp] = useState(0);
     const [averageAirTemp, setAverageAirTemp] = useState(0);
     const [airTempValues, setAirTempValues] = useState(0);
@@ -31,16 +31,18 @@ const AirTemp = () => {
         const aggregatedData = {};
         filteredData.forEach(item => {
             const hour = new Date(item.period_end).getHours();
+            const temperature = parseFloat(item.air_temp); // Convertendo para número
             if (!aggregatedData[hour]) {
                 aggregatedData[hour] = {
                     count: 1,
-                    temperature: item.air_temp
+                    temperature: temperature
                 };
             } else {
                 aggregatedData[hour].count++;
-                aggregatedData[hour].temperature += item.air_temp;
-            }
-        });
+                aggregatedData[hour].temperature += temperature;
+        }
+    });
+
         return aggregatedData;
     };
 
@@ -61,12 +63,10 @@ const AirTemp = () => {
                 const data = await response.json();
                 setDados(data);
 
-                
                 // Soma a temperatura total
                 const sum = data.reduce((acc, item) => acc + item.air_temp, 0);
                 setTotalAirTemp(sum);
                 
-
                 // Calcula a média
                 const average = sum / data.length;
                 setAverageAirTemp(average);
@@ -122,7 +122,22 @@ const AirTemp = () => {
         return (
             <View key={index}>
                 <Text style={{ color: 'black', fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginTop: 8 }}>{period.name}</Text>
-                <VictoryChart width={408} height={270} theme={VictoryTheme.grayscale}>
+                <VictoryChart width={408} height={270} padding={55} theme={VictoryTheme.grayscale}>
+                    <VictoryAxis
+                        label="Hora"
+                        style={{
+                            axisLabel: { padding: 30 },
+                            tickLabels: { padding: 5 }
+                        }}
+                    />
+                    <VictoryAxis
+                        dependentAxis
+                        label="Temperatura - C°"
+                        style={{
+                            axisLabel: { padding: 39 },
+                            tickLabels: { padding: 5 }
+                        }}
+                    />
                     <VictoryLine
                         style={{ data: { stroke: '#c43a31' }, parent: { border: '1px solid #ccc' } }}
                         data={chartData}

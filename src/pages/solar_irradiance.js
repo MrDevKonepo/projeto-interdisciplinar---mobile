@@ -10,8 +10,8 @@ import styles from '../styles/styles_statistics';
 
 const SolarIrradiance = () => {
     const [dados, setDados] = useState([]);
-    const [startDate, setStartDate] = useState(0);
-    const [endDate, setEndDate] = useState(0);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [selectedDataPoint, setSelectedDataPoint] = useState(null);
     const [chartData, setChartData] = useState({});
     const dniColor = '0, 0, 255';
@@ -228,7 +228,7 @@ const SolarIrradiance = () => {
 
         Alert.alert(
             'Irradiação Exata',
-            `Valor: ${value}`,
+            `Valor: ${value} W/m²`,
             [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
             { cancelable: false }
         );
