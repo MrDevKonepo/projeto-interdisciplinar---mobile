@@ -7,9 +7,11 @@ This is the mobile version, developed with React-Native and MongoDB.
 
 # Instructions
 START BACKEND
+
  projeto-interdisciplinar-quarto-semestre-mobile\backend\services> node server.js
 
 START REACT NATIVE
+
  projeto-interdisciplinar-quarto-semestre-mobile> npx react-native run-android
 
 # Other Links
